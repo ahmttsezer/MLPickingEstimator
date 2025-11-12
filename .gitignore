@@ -1,0 +1,28 @@
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+*.cache
+*.pdb
+*.mdb
+
+# IDE settings
+.vs/
+*.user
+*.suo
+
+# Logs and temp files
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Runtime data and archives
+MLPickingEstimator/Models/archive/
+MLPickingEstimator/Models/archive/**
+MLPickingEstimator/Data/telemetry.db

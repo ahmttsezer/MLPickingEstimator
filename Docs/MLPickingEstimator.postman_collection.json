@@ -1,0 +1,184 @@
+{
+  "info": {
+    "name": "MLPickingEstimator API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Hazır istekler: tahmin, eğitim, rota simulasyonu, dispatch, jobs, sağlık ve telemetri. Değişkenler: baseUrl, apiKey. Güvenlik açıksa X-API-Key header kullanılır."
+  },
+  "item": [
+    {
+      "name": "Predict (single)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}", "disabled": false}
+        ],
+        "url": {"raw": "{{baseUrl}}/predict", "host": ["{{baseUrl}}"], "path": ["predict"]},
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"itemCount\": 12,\n  \"weight\": 6.0,\n  \"volume\": 1.8,\n  \"distance\": 90,\n  \"pickerExperience\": 3,\n  \"stockDensity\": 0.85,\n  \"fragileRatio\": 0.2,\n  \"aisleCrowding\": 0.4,\n  \"cartLoadKg\": 8.5,\n  \"pickerFatigue\": 0.3,\n  \"stopCount\": 5,\n  \"urgencyLevel\": 0.6,\n  \"zoneComplexity\": 0.3,\n  \"temperatureHandling\": 0.1\n}"
+        }
+      }
+    },
+    {
+      "name": "Predict (pooled)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}", "disabled": false}
+        ],
+        "url": {"raw": "{{baseUrl}}/predict-pooled", "host": ["{{baseUrl}}"], "path": ["predict-pooled"]},
+        "body": {"mode": "raw", "raw": "{\n  \"itemCount\": 20,\n  \"weight\": 9.5,\n  \"volume\": 2.6,\n  \"distance\": 140,\n  \"pickerExperience\": 4,\n  \"stockDensity\": 0.9\n}"}
+      }
+    },
+    {
+      "name": "Predict (batch)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/predict-batch", "host": ["{{baseUrl}}"], "path": ["predict-batch"]},
+        "body": {"mode": "raw", "raw": "[\n  {\n    \"itemCount\": 12, \"weight\": 6.0, \"volume\": 1.8, \"distance\": 90, \"pickerExperience\": 3, \"stockDensity\": 0.85\n  },\n  {\n    \"itemCount\": 25, \"weight\": 10.0, \"volume\": 3.0, \"distance\": 120, \"pickerExperience\": 4, \"stockDensity\": 0.92\n  }\n]"}
+      }
+    },
+    {
+      "name": "Train model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/train", "host": ["{{baseUrl}}"], "path": ["train"]}
+      }
+    },
+    {
+      "name": "Simulate route (codes)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/simulate-route", "host": ["{{baseUrl}}"], "path": ["simulate-route"]},
+        "body": {"mode": "raw", "raw": "{\n  \"lastLocationCode\": \"PX-MZ-D01-100A\",\n  \"taskLocationCodes\": [\"PX-MZ-D08-171F\", \"PX-MC-D03-090B\"]\n}"}
+      }
+    },
+    {
+      "name": "Simulate route (coords)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/simulate-route", "host": ["{{baseUrl}}"], "path": ["simulate-route"]},
+        "body": {"mode": "raw", "raw": "{\n  \"lastLocation\": { \"x\": 100, \"y\": 80 },\n  \"taskLocations\": [ { \"x\": 460, \"y\": 165 }, { \"x\": 220, \"y\": 110 } ]\n}"}
+      }
+    },
+    {
+      "name": "Optimize dispatch",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/optimize-dispatch", "host": ["{{baseUrl}}"], "path": ["optimize-dispatch"]},
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vehicles\": [\n    {\"id\": \"V1\", \"currentLocationCode\": \"PX-MC-D03-090B\", \"zone\": \"MC\"},\n    {\"id\": \"V2\", \"currentLocationCode\": \"PX-MZ-D08-171F\", \"zone\": \"MZ\"}\n  ],\n  \"jobs\": [\n    {\"id\": \"J1\", \"rackId\": \"PX-MC-D03-090B\"},\n    {\"id\": \"J2\", \"rackId\": \"PX-MZ-D08-171F\"}\n  ],\n  \"averageSpeedMps\": 1.2,\n  \"handlingSecondsPerTask\": 15,\n  \"energyMode\": true,\n  \"energyWeight\": 0.6\n}"
+        }
+      }
+    },
+    {
+      "name": "Jobs ingest",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/jobs/ingest", "host": ["{{baseUrl}}"], "path": ["jobs", "ingest"]},
+        "body": {"mode": "raw", "raw": "{\n  \"jobs\": [\n    {\"id\": \"job-1\", \"location\": {\"x\": 110, \"y\": 85}, \"weightKg\": 5, \"priority\": 1, \"zone\": \"A\", \"orderId\": \"ORD-1001\", \"corridor\": \"D08\"}\n  ]\n}"}
+      }
+    },
+    {
+      "name": "Jobs export (CSV)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Accept", "value": "text/csv"}
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/jobs/export?format=csv",
+          "host": ["{{baseUrl}}"],
+          "path": ["jobs", "export"],
+          "query": [{"key": "format", "value": "csv"}]
+        }
+      }
+    },
+    {
+      "name": "Jobs export (XLSX)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Accept", "value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/jobs/export?format=xlsx",
+          "host": ["{{baseUrl}}"],
+          "path": ["jobs", "export"],
+          "query": [{"key": "format", "value": "xlsx"}]
+        }
+      }
+    },
+    {
+      "name": "Telemetry (post)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{apiKey}}"}
+        ],
+        "url": {"raw": "{{baseUrl}}/telemetry", "host": ["{{baseUrl}}"], "path": ["telemetry"]},
+        "body": {"mode": "raw", "raw": "{\n  \"personId\": \"P001\",\n  \"itemsPicked\": 120,\n  \"hoursWorked\": 8,\n  \"errors\": 2,\n  \"travelDistanceMeters\": 1500\n}"}
+      }
+    },
+    {
+      "name": "Performance (live)",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "{{baseUrl}}/personnel/performance/live", "host": ["{{baseUrl}}"], "path": ["personnel", "performance", "live"]}
+      }
+    },
+    {
+      "name": "Health (live)",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "{{baseUrl}}/health/live", "host": ["{{baseUrl}}"], "path": ["health", "live"]}
+      }
+    },
+    {
+      "name": "Health (ready)",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "{{baseUrl}}/health/ready", "host": ["{{baseUrl}}"], "path": ["health", "ready"]}
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// İsteğe bağlı: apiKey boşsa header gönderilse de sunucu devrede değilse yok sayar",
+          "// Güvenlik kapalıysa X-API-Key başarısız olmaz."
+        ]
+      }
+    }
+  ]
+}

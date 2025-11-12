@@ -1,0 +1,19 @@
+:root {
+  --brand-start: #eef5ff;
+  --brand-end: #fffaf0;
+}
+.hero {
+  background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+}
+body { background-color: #f7f9fc; }
+.card { border-radius: 0.8rem; }
+.table thead th { font-weight: 600; }
+.assignment-card { border-left: 6px solid #0d6efd; }
+.progress { height: 8px; }
+.pill { display: inline-block; padding: .25rem .5rem; border-radius: 999px; background:#eef3ff; color:#2651a7; font-size:.75rem; }
+.perf-badge { font-size:.75rem; background:#e9f9ee; color:#157347; border-radius:999px; padding:.2rem .5rem; }
+svg#warehouseMap { background:#fff; border:1px solid #e5e7eb; border-radius:.5rem; }
+
+/* Metinlerin tam görünmesi için yardımcı sınıflar */
+.cell-text { display:inline-block; max-width:100%; white-space:normal; word-break:break-word; }
+.xy-badge { display:inline-block; padding:.15rem .4rem; border-radius:.4rem; background:#eef2f7; color:#667085; font-size:.75rem; }

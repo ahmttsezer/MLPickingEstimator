@@ -1,0 +1,7 @@
+*.onnx filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.xlsx filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+Models/picking_model.zip filter=lfs diff=lfs merge=lfs -text
+MLPickingEstimator/jobs-export.xlsx filter=lfs diff=lfs merge=lfs -text
+MLPickingEstimator/tasks-sample.xlsx filter=lfs diff=lfs merge=lfs -text

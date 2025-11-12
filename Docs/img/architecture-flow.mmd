@@ -1,0 +1,7 @@
+flowchart LR
+  A[Data] --> B[Train]
+  B --> C[Evaluate]
+  C --> D[Save Model]
+  D --> E[Predict]
+  E --> F[Monitor]
+  F -->|Drift?| B

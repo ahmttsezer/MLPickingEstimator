@@ -1,0 +1,4 @@
+Görev No,Barkod,Dağılım No,Zone,Koridor,Mega İş Listedi ID,Split Tamamlandı Mı?,Miktar,Yapılacak Miktar,Tamamlanan Miktar,PK İş İstasyonu,İlk Lokasyonu,Son Lokasyonu,İş İstasyonu,Rack,Görev Başlama Zamanı,Görev Bitiş Zamanı,İlk Paleti,Son Paleti,İlk Kolisi,Orjinal Sipariş No,Son Kolisi,İlk Paket Tipi,Son Paket Tipi
+T-001,8691234567890,D-1001,MZ,SA01,ML-0001,Hayır,10,6,0,PK-01,PX-MZ-D08-171F,PX-MZ-D08-172F,WS-01,RK-01,2025-11-03 09:00,,PL-01,,BX-01,ORD-1234,,PKT-A,
+T-002,8691234567891,D-1002,MC,1516,ML-0002,Evet,8,8,0,PK-02,PX-MC-A106,PX-MC-A110,WS-02,RK-02,2025-11-03 09:20,,PL-02,,BX-02,ORD-5678,,PKT-B,
+T-003,8691234567892,D-1003,PM02,199,ML-0003,Hayır,12,7,2,PK-03,PX-PM02-199,PX-PM02-205,WS-03,RK-03,2025-11-03 09:45,,PL-03,,BX-03,ORD-9012,,PKT-C,

@@ -1,0 +1,47 @@
+{
+  "personnel": [
+    {
+      "id": "p1",
+      "name": "Ay\u015Fe",
+      "lastLocationCode": "PX-MZ-D08-171F",
+      "pickerExperience": 3,
+      "speedFactor": 1,
+      "zone": "MZ"
+    },
+    {
+      "id": "p2",
+      "name": "Mehmet",
+      "lastLocationCode": "PX-MC-A106",
+      "pickerExperience": 2,
+      "speedFactor": 0.95,
+      "zone": "MC"
+    },
+    {
+      "id": "p3",
+      "name": "Elif",
+      "lastLocationCode": "PX-PM02-199",
+      "pickerExperience": 4,
+      "speedFactor": 1.05,
+      "zone": "PM02"
+    }
+  ],
+  "locations": {
+    "p1": {
+      "x": 460,
+      "y": 140
+    },
+    "p2": {
+      "x": 110,
+      "y": 166
+    },
+    "p3": {
+      "x": 200,
+      "y": 250
+    }
+  },
+  "weeklyPerformance": {
+    "p1": 1.08,
+    "p2": 0.94,
+    "p3": 1.12
+  }
+}

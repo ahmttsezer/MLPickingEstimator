@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ML.NET Depo Operasyonları – Personel Görev Atama</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/assign.css" rel="stylesheet">
+</head>
+<body>
+  <header class="hero py-5 mb-4 border-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-6 fw-bold mb-2">ML.NET ile Depo Operasyonları: Personel Görev Atama</h1>
+          <p class="text-secondary mb-0">Excel’den görevleri yükle, kriterlere göre dağıt ve tamamlanma süresini tahmin et.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+          <span class="badge rounded-pill bg-primary-subtle text-primary">Yeni</span>
+          <span class="badge rounded-pill bg-success-subtle text-success">Greedy + ML Tahmin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="row g-4">
+      <section class="col-lg-7">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="bi bi-sliders"></i> Atama Kriterleri</h5>
+            <button id="resetCriteria" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> Sıfırla</button>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 d-flex gap-2 flex-wrap mb-2">
+                <button class="btn btn-outline-primary btn-sm" id="presetSpeed"><i class="bi bi-lightning"></i> Hız Odaklı</button>
+                <button class="btn btn-outline-secondary btn-sm" id="presetDistance"><i class="bi bi-signpost"></i> Mesafe Minimize</button>
+                <button class="btn btn-outline-success btn-sm" id="presetBalanced"><i class="bi bi-scale"></i> Dengeli Yük</button>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">ML Süresi Ağırlığı</label>
+                <input type="range" class="form-range" id="wTime" min="0" max="2" step="0.1" value="1">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Mesafe Ağırlığı</label>
+                <input type="range" class="form-range" id="wDist" min="0" max="1" step="0.05" value="0.3">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Zaman Penceresi Ağırlığı</label>
+                <input type="range" class="form-range" id="wTimeWindow" min="0" max="1" step="0.05" value="0">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Müşteri Öncelik Ağırlığı</label>
+                <input type="range" class="form-range" id="wCustomer" min="0" max="1" step="0.05" value="0">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Aciliyet Ağırlığı</label>
+                <input type="range" class="form-range" id="wUrgency" min="0" max="1.5" step="0.05" value="0.8">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Zaman Toleransı (dk)</label>
+                <input type="number" class="form-control" id="wTol" min="0" max="60" value="15">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Zaman Ölçeği (dk)</label>
+                <input type="number" class="form-control" id="wScale" min="30" max="180" value="90">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Acil Taban Boost</label>
+                <input type="range" class="form-range" id="wBase" min="0" max="1" step="0.05" value="0.6">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Tecrübe Bonusu</label>
+                <input type="range" class="form-range" id="wExp" min="0" max="1" step="0.05" value="0.1">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Hız Bonusu</label>
+                <input type="range" class="form-range" id="wSpeed" min="0" max="1" step="0.05" value="0.2">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Yük Dengeleme</label>
+                <input type="range" class="form-range" id="wBalance" min="0" max="0.2" step="0.01" value="0.05">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Zone Uyum Bonusu</label>
+                <input type="range" class="form-range" id="wZone" min="0" max="1" step="0.05" value="0.5">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Koridor Kümeleme Bonusu</label>
+                <input type="range" class="form-range" id="wCorr" min="0" max="1" step="0.05" value="0.3">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Kişi Başına Maks. Görev</label>
+                <input type="number" class="form-control" id="maxTasks" min="0" value="0">
+              </div>
+              <div class="col-md-12 d-flex align-items-center gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="clusterCorr" checked>
+                  <label class="form-check-label" for="clusterCorr">Koridor bazlı kümelenme</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="priorUrgent" checked>
+                  <label class="form-check-label" for="priorUrgent">Acil/öncelikli görevleri öne al</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white">
+            <h5 class="card-title mb-0"><i class="bi bi-file-earmark-spreadsheet"></i> Görev Veri Kaynağı</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">CSV/Excel Yükle</label>
+              <input class="form-control" type="file" id="excelInput" accept=".xlsx,.xls,.csv" />
+              <div class="form-text">Başlık örneği: Görev No, İlk Lokasyonu, Miktar, Yapılacak Miktar, Zone, Koridor, vb.</div>
+            </div>
+            <div class="text-center text-muted my-3">veya</div>
+            <div class="mb-3">
+              <label class="form-label">JSON Yapıştır (İsteğe bağlı)</label>
+              <textarea id="jsonInput" class="form-control" rows="5" placeholder='{"tasks":[{"taskId":1,"firstLocation":"PX-MZ-D08-171F","todoQuantity":6}],"personnel":[{"id":"p1","name":"Ayşe","lastLocationCode":"PX-MZ-D08-171F","pickerExperience":3,"speedFactor":1.0}]}'></textarea>
+              <div class="form-text">Not: <code>taskId</code> alanı sayısal olmalıdır (ör. 1, 2, 1001).</div>
+              <div class="mt-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <small class="text-secondary">Örnek JSON</small>
+                  <div class="d-flex gap-2">
+                    <button id="copySampleJson" type="button" class="btn btn-outline-secondary btn-sm"><i class="bi bi-clipboard"></i> Kopyala</button>
+                    <button id="fillSampleJson" type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-clipboard-plus"></i> Editöre Aktar</button>
+                  </div>
+                </div>
+                <pre id="sampleJson" class="bg-light border rounded p-2" style="font-size:0.85rem; white-space:pre-wrap;"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <h5 class="card-title mb-0"><i class="bi bi-people"></i> Personel Listesi</h5>
+            <div>
+              <button id="refreshPersonnel" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-clockwise"></i> Personeller Güncel Bilgi Getir</button>
+              <button id="assignBtn" class="btn btn-primary btn-sm ms-2"><i class="bi bi-magic"></i> Görevleri Dağıt</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Ad</th>
+                    <th>Son Lokasyon</th>
+                    <th>Durum</th>
+                    <th>Tecrübe (1–5)</th>
+                    <th>Hız Katsayısı</th>
+                    <th>Canlı Performans</th>
+                    <th class="text-end">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="personTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="col-lg-5">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white">
+            <h5 class="card-title mb-0"><i class="bi bi-map"></i> Depo Haritası</h5>
+          </div>
+          <div class="card-body">
+            <svg id="warehouseMap" viewBox="0 0 900 300" width="100%" height="280" role="img" aria-label="Depo haritası"></svg>
+          </div>
+        </div>
+        <div class="card shadow-sm sticky-top" style="top:1rem">
+          <div class="card-header bg-white">
+            <h5 class="card-title mb-0"><i class="bi bi-clipboard-check"></i> Atama Sonuçları</h5>
+          </div>
+          <div class="card-body" id="results">
+            <div class="placeholder-glow">
+              <span class="placeholder col-12 mb-2"></span>
+              <span class="placeholder col-8"></span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between">
+            <small id="summary" class="text-secondary">Hazır.</small>
+            <div class="d-flex gap-2">
+              <div class="btn-group">
+                <button class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-download"></i> Dışa Aktar</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#" id="exportCsv">CSV</a></li>
+                  <li><a class="dropdown-item" href="#" id="exportXlsx">Excel (.xlsx)</a></li>
+                </ul>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-file-earmark-spreadsheet"></i> Şablon İndir</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#" id="templateCsv">Görev Şablonu (CSV)</a></li>
+                  <li><a class="dropdown-item" href="#" id="templateXlsx">Görev Şablonu (Excel)</a></li>
+                </ul>
+              </div>
+              <button id="clearBtn" class="btn btn-outline-secondary btn-sm"><i class="bi bi-trash"></i> Temizle</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="assets/assign.js?v=2"></script>
+</body>
+</html>
