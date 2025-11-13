@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET 9 SDK
         uses: actions/setup-dotnet@v4
@@ -44,7 +46,7 @@ jobs:
           Write-Host "Zipped artifact: $zipPath"
           Write-Host "Listing publish directory: $publishDir"
           Get-ChildItem $publishDir -Recurse | Format-List FullName
-          "zip_path=$zipPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "zip_path=$zipPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Determine release tag
         id: vars
@@ -54,7 +56,7 @@ jobs:
           if ("${{ github.event_name }}" -eq "workflow_dispatch") { $tag = "${{ inputs.tag_name }}" }
           if ([string]::IsNullOrEmpty($tag)) { Write-Error "Release tag not provided"; exit 1 }
           Write-Host "Using tag: $tag"
-          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Create GitHub Release and upload asset
         uses: softprops/action-gh-release@v2
