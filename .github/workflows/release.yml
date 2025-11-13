@@ -11,12 +11,14 @@ on:
         type: string
         required: true
 
-  jobs:
-    build-and-release:
-      runs-on: windows-latest
-      permissions:
-        contents: write
-      steps:
+jobs:
+  build-and-release:
+    # Run only on tag pushes or manual dispatch
+    if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -44,23 +46,22 @@ on:
           Get-ChildItem $publishDir -Recurse | Format-List FullName
           "zip_path=$zipPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag_name }}
-          release_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag_name }}
-          draft: false
-          prerelease: false
+      - name: Determine release tag
+        id: vars
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") { $tag = "${{ inputs.tag_name }}" }
+          if ([string]::IsNullOrEmpty($tag)) { Write-Error "Release tag not provided"; exit 1 }
+          Write-Host "Using tag: $tag"
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Upload Release Asset (ZIP)
-        uses: actions/upload-release-asset@v1
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          files: |
+            MLPickingEstimator-win-x64.zip
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: MLPickingEstimator-win-x64.zip
-          asset_name: MLPickingEstimator-win-x64.zip
-          asset_content_type: application/zip
