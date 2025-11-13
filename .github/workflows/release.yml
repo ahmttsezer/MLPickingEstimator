@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag to release (e.g., v1.0.0)"
+        type: string
+        required: true
 
 jobs:
   build-and-release:
@@ -38,6 +44,7 @@ jobs:
       - name: Create GitHub Release and upload asset
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag_name }}
           files: |
             MLPickingEstimator-win-x64.zip
           generate_release_notes: true
