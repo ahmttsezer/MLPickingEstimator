@@ -39,7 +39,7 @@ jobs:
       - name: Create ZIP artifact
         shell: pwsh
         run: |
-          $publishDir = Join-Path $PWD 'MLPickingEstimator/MLPickingEstimator/bin/Release/net9.0/win-x64/publish'
+          $publishDir = Join-Path $PWD 'MLPickingEstimator/bin/Release/net9.0/win-x64/publish'
           $zipPath = Join-Path $PWD 'MLPickingEstimator-win-x64.zip'
           if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
           Compress-Archive -Path "$publishDir/*" -DestinationPath $zipPath -Force
