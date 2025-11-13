@@ -26,3 +26,6 @@ __pycache__/
 MLPickingEstimator/Models/archive/
 MLPickingEstimator/Models/archive/**
 MLPickingEstimator/Data/telemetry.db
+
+# Publish output (do not version binaries)
+publish/

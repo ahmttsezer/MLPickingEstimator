@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MLPickingEstimator.Repositories;
 using ClosedXML.Excel;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 // YapÄ±landÄ±rma: appsettings.jsonâ€™dan yollar ve ayarlar
@@ -1236,5 +1237,25 @@ app.MapPost("/retrain-if-drift", (int? thresholdPercent) =>
 
 // Swagger'Ä± etkinleÅŸtir
 // Swagger UI doÄŸrudan /swagger altÄ±nda servis edilir
+
+// Uygulama başlatıldığında varsayılan tarayıcıyı aç
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    try
+    {
+        var urlsEnv = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+        var configured = builder.Configuration["Urls"];
+        var baseUrl = (urlsEnv ?? configured ?? "http://localhost:5000")
+            .Split(';', StringSplitOptions.RemoveEmptyEntries)[0]
+            .TrimEnd('/');
+        var target = $"{baseUrl}/personnel-assign.html";
+        Process.Start(new ProcessStartInfo(target) { UseShellExecute = true });
+        Console.WriteLine($"Tarayıcı açıldı: {target}");
+    }
+    catch (Exception ex)
+    {
+        try { app.Logger.LogWarning(ex, "Tarayıcı otomatik açma başarısız."); } catch { }
+    }
+});
 
 app.Run();

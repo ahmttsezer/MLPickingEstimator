@@ -18,6 +18,22 @@ Bu depo, ML.NET tabanlı bir tahmin ve görev atama uygulamasını içerir. Aşa
 - UI’yi açın:
   - `http://localhost:5100/personnel-assign.html`
 
+## Yayın ve .exe ile Çalıştırma (Son Kullanıcılar)
+- Self-contained Windows yayın (geliştirici tarafı):
+  - `dotnet publish MLPickingEstimator/MLPickingEstimator.csproj -c Release -r win-x64 --self-contained true`
+- Çıktı dizini: `publish/win-x64/`
+- Çalıştırma:
+  - `publish/win-x64/MLPickingEstimator.exe`
+- Varsayılan URL: `http://localhost:5000/`
+- Sağlık kontrolü:
+  - `http://localhost:5000/health` ve `http://localhost:5000/healthz`
+- UI kısa yolu:
+  - `http://localhost:5000/warehouse` (otomatik `personnel-assign.html` sayfasına yönlendirir)
+- Notlar:
+  - `.exe` self-contained olduğu için .NET runtime kurulu olması gerekmez.
+  - Port çakışması veya güvenlik duvarı engeli varsa `ASPNETCORE_URLS` ile port değiştirilebilir (örn. `http://localhost:5200`).
+  - Büyük model dosyaları Git LFS ile yönetilir; yayın klasörü tüm bağımlılıkları içerir.
+
 ## Canlı Doğrulama
 - Personel bilgileri: `GET http://localhost:5100/personnel`
 - Son lokasyonlar: `GET http://localhost:5100/personnel/locations`
@@ -40,6 +56,8 @@ Bu depo, ML.NET tabanlı bir tahmin ve görev atama uygulamasını içerir. Aşa
 ## Test ve Release Derleme
 - Testleri çalıştır: `dotnet test`
 - Release derleme: `dotnet build -c Release`
+ - Yayın al ve tek klasörden çalıştır: `dotnet publish -c Release -r win-x64 --self-contained true`
+ - Çalıştır: `./publish/win-x64/MLPickingEstimator.exe`
 
 ## Ek Dokümanlar
 - Detaylı API için: `MLPickingEstimator/API.md`
