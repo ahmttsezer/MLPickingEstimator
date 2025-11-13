@@ -1,0 +1,45 @@
+name: Release (Publish Windows x64)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore MLPickingEstimator.sln
+
+      - name: Publish self-contained Windows x64
+        run: |
+          dotnet publish MLPickingEstimator/MLPickingEstimator.csproj -c Release -r win-x64 --self-contained true
+
+      - name: Create ZIP artifact
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $PWD 'MLPickingEstimator/MLPickingEstimator/bin/Release/net9.0/win-x64/publish'
+          $zipPath = Join-Path $PWD 'MLPickingEstimator-win-x64.zip'
+          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+          Compress-Archive -Path "$publishDir/*" -DestinationPath $zipPath -Force
+          Write-Host "Zipped artifact: $zipPath"
+
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            MLPickingEstimator-win-x64.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
