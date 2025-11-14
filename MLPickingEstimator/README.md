@@ -1,6 +1,13 @@
-﻿# ML.NET Depo OperasyonlarÄ± Tahmin Motoru
+﻿# MLPickingEstimator (Web API) — Proje Dokümantasyonu
 
-Bu proje, Microsoft'un ML.NET framework'Ã¼ kullanÄ±larak geliÅŸtirilmiÅŸ kapsamlÄ± bir makine Ã¶ÄŸrenmesi uygulamasÄ±dÄ±r.
+Bu klasör, web API projesi için dosyaları içerir. Geniş kapsamlı kurulum, yayın ve doğrulama adımları için kök dizindeki `README.md` dosyasını izleyin.
+
+Hızlı başlatma:
+- `dotnet restore ../MLPickingEstimator.sln`
+- `dotnet run --project . --urls http://localhost:5100`
+- UI: `http://localhost:5100/personnel-assign.html`
+
+Detaylar ve API referansı: kök `README.md` ve `API.md`.
 
 ## ğŸš€ HÄ±zlÄ± BaÅŸlangÄ±Ã§
 
